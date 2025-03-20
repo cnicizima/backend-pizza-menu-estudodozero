@@ -1,0 +1,38 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String?
+  password String?
+  is_admin Boolean @default(false)
+  image    String?
+}
+
+model Pizza {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String?
+  orderId     Int?
+  Order       Order?  @relation(fields: [orderId], references: [id])
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  totalPrice      Float
+  customerName    String
+  customerPhone   String
+  customerAddress String
+  createdAt       DateTime @default(now())
+  pizzas          Pizza[]
+}
